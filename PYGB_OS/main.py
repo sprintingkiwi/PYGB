@@ -1,5 +1,4 @@
 import pygame
-import time
 import os
 import subprocess
 from menu import Menu
@@ -31,6 +30,7 @@ class Pygb():
             print("*  " + game)
         self.buttonA = False
         self.buttonB = False
+        self.needupdate = True
         self.actual_menu = Menu(self)
         # CREATE MAIN MENU
         self.mainmenu = Menu(self, fontname="MV Boli", size=64, color=self.white)
@@ -38,7 +38,7 @@ class Pygb():
         self.gamesmenu = Menu(self, fontname="MV Boli", size=48, color=self.white, parent=self.mainmenu)
         # CREATE OPTIONS MENU
         self.optionsmenu = Menu(self, fontname="MV Boli", size=48, color=self.blue, parent=self.mainmenu)
-        # CREATE CREDITS MENU
+        # CREATE CREDITS MENUS
         self.credits_scroll = Menu(self,
                               fontname="MV Boli",
                               size=32,
@@ -49,6 +49,7 @@ class Pygb():
         self.cred_details = Menu(self,
                               fontname="MV Boli",
                               size=32,
+                              location=[300, 200],
                               color=self.green,
                               selection_color=self.green,
                               selection_zoom=1,
@@ -115,65 +116,73 @@ class Pygb():
     def quit_pygb(self, *args):
         os.system("sudo poweroff")
 
+    def events_check(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.openbox()
+            if event.type == pygame.KEYDOWN:
+                self.needupdate = True
+                if event.key == pygame.K_ESCAPE:
+                    self.openbox()
+                if event.key == pygame.K_DOWN:
+                    menuentries = len(self.actual_menu.sprites())
+                    if menuentries > 1:
+                        if self.actual_menu.actual_choice < menuentries - 1:
+                            self.actual_menu.actual_choice += 1
+                        else:
+                            self.actual_menu.actual_choice = 0
+                        self.actual_menu.update()
+                if event.key == pygame.K_UP:
+                    menuentries = len(self.actual_menu.sprites())
+                    if menuentries > 1:
+                        if self.actual_menu.actual_choice > 0:
+                            self.actual_menu.actual_choice -= 1
+                        else:
+                            self.actual_menu.actual_choice = menuentries - 1
+                        self.actual_menu.update()
+                if event.key == pygame.K_z:
+                    print("Button B pressed")
+                    self.buttonB = True
+                if event.key == pygame.K_x:
+                    print("Button A pressed")
+                    self.buttonA = True
+
+    def choice_effects(self):
+        if self.buttonA:
+            print self.actual_menu.sprites()
+            c = self.actual_menu.sprites()[self.actual_menu.actual_choice]
+            if c.effect is not None:
+                c.execute(c.effect, c.param)
+            self.actual_menu.update()
+        if self.buttonB:
+            if self.actual_menu.parent is not None:
+                self.actual_menu = self.actual_menu.parent
+                self.actual_menu.update()
+
+    def draw_images(self):
+        self.screen.fill(self.black)
+        if self.actual_menu.actual_thumb is not None:
+            self.screen.blit(self.actual_menu.actual_thumb, [self.height_adapt(100), self.height_adapt(200)])
+        self.actual_menu.draw(self.screen)
+
     def mainloop(self):
         while True:
+
+            self.events_check()
+
+            if self.needupdate:
+                self.choice_effects()
+                self.draw_images()
+                # UPDATE SCREEN
+                pygame.display.update()
+
+            # wait time between frames
+            self.clock.tick(30)
 
             # deactivate button pression
             self.buttonA = False
             self.buttonB = False
-
-            # EVENTS CHECK
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    self.openbox()
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
-                        self.openbox()
-                    if event.key == pygame.K_DOWN:
-                        menuentries = len(self.actual_menu.sprites())
-                        if menuentries > 1:
-                            if self.actual_menu.actual_choice < menuentries - 1:
-                                self.actual_menu.actual_choice += 1
-                            else:
-                                self.actual_menu.actual_choice = 0
-                            self.actual_menu.update()
-                    if event.key == pygame.K_UP:
-                        menuentries = len(self.actual_menu.sprites())
-                        if menuentries > 1:
-                            if self.actual_menu.actual_choice > 0:
-                                self.actual_menu.actual_choice -= 1
-                            else:
-                                self.actual_menu.actual_choice = menuentries - 1
-                            self.actual_menu.update()
-                    if event.key == pygame.K_z:
-                        print("Button B pressed")
-                        self.buttonB = True
-                    if event.key == pygame.K_x:
-                        print("Button A pressed")
-                        self.buttonA = True
-
-            # Choices Effects
-            if self.buttonA:
-                print self.actual_menu.sprites()
-                c = self.actual_menu.sprites()[self.actual_menu.actual_choice]
-                if c.effect is not None:
-                    c.execute(c.effect, c.param)
-                self.actual_menu.update()
-            if self.buttonB:
-                if self.actual_menu.parent is not None:
-                    self.actual_menu = self.actual_menu.parent
-                    self.actual_menu.update()
-
-
-            # DRAW IMAGES
-            self.screen.fill(self.black)
-            if self.actual_menu.actual_thumb is not None:
-                self.screen.blit(self.actual_menu.actual_thumb, [self.height_adapt(100), self.height_adapt(200)])
-            self.actual_menu.draw(self.screen)
-
-            # UPDATE SCREEN
-            pygame.display.update()
-            self.clock.tick(30)
+            self.needupdate = False
 
 
 PYGB = Pygb()

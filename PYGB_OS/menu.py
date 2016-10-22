@@ -1,10 +1,5 @@
 import pygame
-import time
-import os
-import subprocess
 from choice import Choice
-
-
 
 # class for menus
 class Menu(pygame.sprite.OrderedUpdates):
@@ -18,12 +13,13 @@ class Menu(pygame.sprite.OrderedUpdates):
                  color=[255, 255, 255],
                  selection_color=[255, 0, 0],
                  selection_zoom=0.125,
-                 parent = None,
+                 parent=None,
+                 location=[800, 250],
                  *args):
         super(Menu, self).__init__()
         self.pygb = pygb
         self.fontname = fontname
-        self.size = (size * self.pygb.height) / 720
+        self.size = pygb.height_adapt(size)
         self.bold = bold
         self.italic = italic
         self.color = color
@@ -33,12 +29,14 @@ class Menu(pygame.sprite.OrderedUpdates):
         self.selection_color = selection_color
         self.selection_zoom = selection_zoom
         self.parent = parent
+        self.location = location
 
     def create_choice(self, ID, text, thumb="", effect=None, param=None):
         self.add(Choice(self.pygb,
                         ID,
                         self.fontname,
                         self.size,
+                        self.location,
                         self.bold,
                         self.italic,
                         text,

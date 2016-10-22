@@ -1,9 +1,4 @@
 import pygame
-import time
-import os
-import subprocess
-
-
 
 # Class for menu choices
 class Choice(pygame.sprite.Sprite):
@@ -13,6 +8,7 @@ class Choice(pygame.sprite.Sprite):
                  ID,
                  fontname,
                  size,
+                 location,
                  bold,
                  italic,
                  text,
@@ -32,8 +28,8 @@ class Choice(pygame.sprite.Sprite):
         self.image = self.font.render(self.text, False, self.color)
         self.place = self.ID
         self.rect = self.image.get_rect()
-        self.rect.x = pygb.width_adapt(800)
-        self.rect.y = pygb.height_adapt(250) + ((2 * self.size) + (0.3 * self.size)) * self.place
+        self.rect.x = pygb.width_adapt(location[0])
+        self.rect.y = pygb.height_adapt(location[1]) + ((2 * self.size) + (0.3 * self.size)) * self.place
         #if self.rect.y > height:
             #self.rect.y = 50
         try:
