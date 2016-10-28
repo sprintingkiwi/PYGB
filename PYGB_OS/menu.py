@@ -8,7 +8,7 @@ class Menu(pygame.sprite.OrderedUpdates):
                  pygb,
                  fontname="Liberation Serif",
                  size=32,
-                 bold=True,
+                 bold=False,
                  italic=False,
                  color=[255, 255, 255],
                  selection_color=[255, 0, 0],

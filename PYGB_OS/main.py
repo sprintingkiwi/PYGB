@@ -1,5 +1,6 @@
 import pygame
 import os
+import time
 import subprocess
 from menu import Menu
 
@@ -11,8 +12,8 @@ class Pygb():
         pygame.init()
         self.width = 800
         self.height = 480
-        self.screen = pygame.display.set_mode([self.width, self.height])
-        #self.screen = pygame.display.set_mode([width, self.height], pygame.FULLSCREEN)
+        #self.screen = pygame.display.set_mode([self.width, self.height])
+        self.screen = pygame.display.set_mode([self.width, self.height], pygame.FULLSCREEN)
         self.clock = pygame.time.Clock()
         # Define some colors
         self.white = [255, 255, 255]
@@ -23,6 +24,7 @@ class Pygb():
         # Available games list
         self.GAMES_list = os.listdir("/home/pi/PYGB_GAMES/")
         self.GAMES_list.remove(".git")
+        self.GAMES_list.remove(".gitignore")
         self.GAMES_list.remove("README.md")
         self.GAMES_list.remove("LICENSE")
         print("Available Games:")
@@ -33,21 +35,21 @@ class Pygb():
         self.needupdate = True
         self.actual_menu = Menu(self)
         # CREATE MAIN MENU
-        self.mainmenu = Menu(self, fontname="MV Boli", size=64, color=self.white)
+        self.mainmenu = Menu(self, fontname="intuitive", size=64, color=self.white)
         # CREATE GAMES MENU
-        self.gamesmenu = Menu(self, fontname="MV Boli", size=48, color=self.white, parent=self.mainmenu)
+        self.gamesmenu = Menu(self, fontname="intuitive", size=48, color=self.white, parent=self.mainmenu)
         # CREATE OPTIONS MENU
-        self.optionsmenu = Menu(self, fontname="MV Boli", size=48, color=self.blue, parent=self.mainmenu)
+        self.optionsmenu = Menu(self, fontname="intuitive", size=48, color=self.blue, parent=self.mainmenu)
         # CREATE CREDITS MENUS
         self.credits_scroll = Menu(self,
-                              fontname="MV Boli",
+                              fontname="intuitive",
                               size=32,
                               color=self.green,
                               selection_color=self.green,
                               selection_zoom=1,
                               parent=self.optionsmenu)
         self.cred_details = Menu(self,
-                              fontname="MV Boli",
+                              fontname="intuitive",
                               size=32,
                               location=[300, 200],
                               color=self.green,
@@ -98,6 +100,7 @@ class Pygb():
         quit()
 
     def update_games(self, *args):
+        subprocess.Popen(["git", "checkout", "."], cwd="/home/pi/PYGB_GAMES/")        
         subprocess.Popen(["git", "pull"], cwd="/home/pi/PYGB_GAMES/")
 
     def openbox(self, *args):
