@@ -100,7 +100,7 @@ class Pygb():
         quit()
 
     def update_games(self, *args):
-        subprocess.Popen(["git", "checkout", "."], cwd="/home/pi/PYGB_GAMES/")        
+        subprocess.call(["git", "checkout", "."], cwd="/home/pi/PYGB_GAMES/")        
         subprocess.Popen(["git", "pull"], cwd="/home/pi/PYGB_GAMES/")
 
     def openbox(self, *args):
