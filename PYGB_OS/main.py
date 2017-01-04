@@ -12,8 +12,8 @@ class Pygb():
         pygame.init()
         self.width = 800
         self.height = 480
-        self.screen = pygame.display.set_mode([self.width, self.height])
-        #self.screen = pygame.display.set_mode([self.width, self.height], pygame.FULLSCREEN)
+        #self.screen = pygame.display.set_mode([self.width, self.height])
+        self.screen = pygame.display.set_mode([self.width, self.height], pygame.FULLSCREEN)
         self.clock = pygame.time.Clock()
         # Define some colors
         self.white = [255, 255, 255]
@@ -153,7 +153,6 @@ class Pygb():
                 self.needupdate = True
                 if event.key == pygame.K_ESCAPE:
                     self.buttonESCAPE = True
-                    self.openbox()
                 if event.key == pygame.K_RETURN:
                     self.buttonSTART = True
                     print("Button START pressed")
@@ -191,6 +190,8 @@ class Pygb():
             if self.actual_menu.parent is not None:
                 self.actual_menu = self.actual_menu.parent
                 self.actual_menu.update()
+        if self.buttonESCAPE:
+            self.openbox()
 
     def draw_images(self):
         #self.screen.fill(self.black)
