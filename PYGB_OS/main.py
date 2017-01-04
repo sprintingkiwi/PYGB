@@ -12,8 +12,8 @@ class Pygb():
         pygame.init()
         self.width = 800
         self.height = 480
-        #self.screen = pygame.display.set_mode([self.width, self.height])
-        self.screen = pygame.display.set_mode([self.width, self.height], pygame.FULLSCREEN)
+        self.screen = pygame.display.set_mode([self.width, self.height])
+        #self.screen = pygame.display.set_mode([self.width, self.height], pygame.FULLSCREEN)
         self.clock = pygame.time.Clock()
         # Define some colors
         self.white = [255, 255, 255]
@@ -32,24 +32,33 @@ class Pygb():
             print("*  " + game)
         self.buttonA = False
         self.buttonB = False
+        self.buttonSTART = False
+        self.buttonESCAPE = False
         self.needupdate = True
+        # LOGO
+        self.logo = pygame.image.load("/home/pi/PYGB_OS/icons/logo.png").convert_alpha()
+        self.logo = pygame.transform.scale(self.logo, [self.width, self.height])
+        # BACKGROUND
+        self.background = pygame.image.load("/home/pi/PYGB_OS/background.png").convert()
+        self.background = pygame.transform.scale(self.background, [self.width, self.height])
+        # ACTUAL MENU
         self.actual_menu = Menu(self)
         # CREATE MAIN MENU
-        self.mainmenu = Menu(self, fontname="intuitive", size=64, color=self.white)
+        self.mainmenu = Menu(self, fontname="PermanentMarker", size=64, color=self.white, location=[950, 250])
         # CREATE GAMES MENU
-        self.gamesmenu = Menu(self, fontname="intuitive", size=48, color=self.white, parent=self.mainmenu)
+        self.gamesmenu = Menu(self, fontname="PermanentMarker", size=48, color=self.white, parent=self.mainmenu)
         # CREATE OPTIONS MENU
-        self.optionsmenu = Menu(self, fontname="intuitive", size=48, color=self.blue, parent=self.mainmenu)
+        self.optionsmenu = Menu(self, fontname="PermanentMarker", size=48, color=self.blue, parent=self.mainmenu)
         # CREATE CREDITS MENUS
         self.credits_scroll = Menu(self,
-                              fontname="intuitive",
+                              fontname="PermanentMarker",
                               size=32,
                               color=self.green,
                               selection_color=self.green,
                               selection_zoom=1,
                               parent=self.optionsmenu)
         self.cred_details = Menu(self,
-                              fontname="intuitive",
+                              fontname="PermanentMarker",
                               size=32,
                               location=[300, 200],
                               color=self.green,
@@ -69,7 +78,7 @@ class Pygb():
         self.optionsmenu.create_choice(3, text="CREDITS", effect=self.change_menu, param=self.credits_scroll)
         # Add Main Menu choices
         self.mainmenu.create_choice(0, text="PLAY", thumb="/home/pi/PYGB_OS/icons/play.png", effect=self.change_menu, param=self.gamesmenu)
-        self.mainmenu.create_choice(1, text="Options", thumb="/home/pi/PYGB_OS/icons/addgames.png", effect=self.change_menu, param=self.optionsmenu)
+        self.mainmenu.create_choice(1, text="Options", thumb="/home/pi/PYGB_OS/icons/options.png", effect=self.change_menu, param=self.optionsmenu)
         self.mainmenu.create_choice(2, text="QUIT", thumb="/home/pi/PYGB_OS/icons/quit.png", effect=self.quit_pygb)
         # Add Credits Menu choices
         for game in self.GAMES_list:
@@ -83,10 +92,24 @@ class Pygb():
         self.actual_menu.update()
 
     def width_adapt(self, number):
-        return (number * self.width) / 1280
+        return int((number * self.width) / 1280)
 
     def height_adapt(self, number):
-        return (number * self.height) / 720
+        return int((number * self.height) / 720)
+
+    def size_adapt(self, picture, ratio=1):
+        newpic = pygame.transform.scale(picture, [int(self.width * ratio), int(self.height * ratio)])
+        return newpic
+
+    def welcome_screen(self):
+        done = False
+        while not done:
+            self.screen.blit(self.logo, [self.width_adapt(50), self.height_adapt(25)])
+            pygame.display.update()
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:
+                        done = True
 
     def change_menu(self, newmenu):
         global actual_menu
@@ -100,7 +123,7 @@ class Pygb():
         quit()
 
     def update_games(self, *args):
-        subprocess.call(["git", "checkout", "."], cwd="/home/pi/PYGB_GAMES/")        
+        subprocess.call(["git", "checkout", "."], cwd="/home/pi/PYGB_GAMES/")
         subprocess.Popen(["git", "pull"], cwd="/home/pi/PYGB_GAMES/")
 
     def openbox(self, *args):
@@ -126,7 +149,11 @@ class Pygb():
             if event.type == pygame.KEYDOWN:
                 self.needupdate = True
                 if event.key == pygame.K_ESCAPE:
+                    self.buttonESCAPE = True
                     self.openbox()
+                if event.key == pygame.K_RETURN:
+                    self.buttonSTART = True
+                    print("Button START pressed")
                 if event.key == pygame.K_DOWN:
                     menuentries = len(self.actual_menu.sprites())
                     if menuentries > 1:
@@ -163,12 +190,15 @@ class Pygb():
                 self.actual_menu.update()
 
     def draw_images(self):
-        self.screen.fill(self.black)
+        #self.screen.fill(self.black)
+        self.screen.blit(self.background, [0, 0])
         if self.actual_menu.actual_thumb is not None:
-            self.screen.blit(self.actual_menu.actual_thumb, [self.height_adapt(100), self.height_adapt(200)])
+            self.screen.blit(self.actual_menu.actual_thumb, [self.width_adapt(250), self.height_adapt(200)])
         self.actual_menu.draw(self.screen)
 
     def mainloop(self):
+        self.welcome_screen()
+
         while True:
 
             self.events_check()
@@ -185,6 +215,8 @@ class Pygb():
             # deactivate button pression
             self.buttonA = False
             self.buttonB = False
+            self.buttonSTART = False
+            self.buttonESCAPE = False
             self.needupdate = False
 
 

@@ -32,12 +32,9 @@ class Choice(pygame.sprite.Sprite):
         self.rect.y = pygb.height_adapt(location[1]) + ((2 * self.size) + (0.3 * self.size)) * self.place
         #if self.rect.y > height:
             #self.rect.y = 50
-        try:
-            self.thumb = pygame.image.load(thumb)
-            h = pygb.height_adapt(500)
-            #rect = self.thumb.get_rect()
-            #w = (rect.width * h) / rect.height
-            self.thumb = pygame.transform.scale(self.thumb, [h, h])
+        try:            
+            self.thumb = pygame.image.load(thumb).convert_alpha()
+            self.thumb = pygame.transform.scale(self.thumb, [int(pygb.width*0.5), int(pygb.height*0.7)])
         except:
             self.thumb = None
         self.effect = effect
