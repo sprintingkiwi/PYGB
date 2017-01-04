@@ -36,10 +36,13 @@ class Pygb():
         self.buttonESCAPE = False
         self.needupdate = True
         # LOGO
-        self.logo = pygame.image.load("/home/pi/PYGB_OS/icons/logo.png").convert_alpha()
+        self.logo = pygame.image.load("/home/pi/PYGB_OS/images/logo.png").convert_alpha()
         self.logo = pygame.transform.scale(self.logo, [self.width, self.height])
+        #CONSOLE
+        self.console = pygame.image.load("/home/pi/PYGB_OS/images/console.png").convert_alpha()
+        self.console = pygame.transform.scale(self.console, [self.width_adapt(800), self.height_adapt(750)])
         # BACKGROUND
-        self.background = pygame.image.load("/home/pi/PYGB_OS/background.png").convert()
+        self.background = pygame.image.load("/home/pi/PYGB_OS/images/background.png").convert()
         self.background = pygame.transform.scale(self.background, [self.width, self.height])
         # ACTUAL MENU
         self.actual_menu = Menu(self)
@@ -77,9 +80,9 @@ class Pygb():
         self.optionsmenu.create_choice(2, text="go to openbox", effect=self.openbox)
         self.optionsmenu.create_choice(3, text="CREDITS", effect=self.change_menu, param=self.credits_scroll)
         # Add Main Menu choices
-        self.mainmenu.create_choice(0, text="PLAY", thumb="/home/pi/PYGB_OS/icons/play.png", effect=self.change_menu, param=self.gamesmenu)
-        self.mainmenu.create_choice(1, text="Options", thumb="/home/pi/PYGB_OS/icons/options.png", effect=self.change_menu, param=self.optionsmenu)
-        self.mainmenu.create_choice(2, text="QUIT", thumb="/home/pi/PYGB_OS/icons/quit.png", effect=self.quit_pygb)
+        self.mainmenu.create_choice(0, text="PLAY", thumb="/home/pi/PYGB_OS/images/play.png", effect=self.change_menu, param=self.gamesmenu)
+        self.mainmenu.create_choice(1, text="Options", thumb="/home/pi/PYGB_OS/images/options.png", effect=self.change_menu, param=self.optionsmenu)
+        self.mainmenu.create_choice(2, text="QUIT", thumb="/home/pi/PYGB_OS/images/quit.png", effect=self.quit_pygb)
         # Add Credits Menu choices
         for game in self.GAMES_list:
             self.credits_scroll.create_choice(self.GAMES_list.index(game),
@@ -104,7 +107,7 @@ class Pygb():
     def welcome_screen(self):
         done = False
         while not done:
-            self.screen.blit(self.logo, [self.width_adapt(50), self.height_adapt(25)])
+            self.screen.blit(self.logo, [0, 0])
             pygame.display.update()
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
@@ -192,8 +195,9 @@ class Pygb():
     def draw_images(self):
         #self.screen.fill(self.black)
         self.screen.blit(self.background, [0, 0])
+        self.screen.blit(self.console, [self.width_adapt(10), self.height_adapt(10)])
         if self.actual_menu.actual_thumb is not None:
-            self.screen.blit(self.actual_menu.actual_thumb, [self.width_adapt(250), self.height_adapt(200)])
+            self.screen.blit(self.actual_menu.actual_thumb, [self.width_adapt(150), self.height_adapt(250)])
         self.actual_menu.draw(self.screen)
 
     def mainloop(self):
