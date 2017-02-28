@@ -14,6 +14,20 @@ class Pygb():
         self.height = 480
         #self.screen = pygame.display.set_mode([self.width, self.height])
         self.screen = pygame.display.set_mode([self.width, self.height], pygame.FULLSCREEN)
+        
+        pygame.key.set_repeat(500, 500)
+        
+        # GAMEPAD
+        self.gamepadControl = False        
+        try:
+            # creo un oggetto Joystick
+            self.pad0 = pygame.joystick.Joystick(0)
+            # inizializzo il joystick
+            self.pad0.init()
+            self.gamepadControl = True
+        except:
+            print('no GamePad found...')
+        
         self.clock = pygame.time.Clock()
         # Define some colors
         self.white = [255, 255, 255]
@@ -34,6 +48,10 @@ class Pygb():
         self.buttonB = False
         self.buttonSTART = False
         self.buttonESCAPE = False
+        self.buttonDOWN = False
+        self.buttonRIGHT = False
+        self.buttonLEFT = False
+        self.buttonUP = False
         self.needupdate = True
         # LOGO
         self.logo = pygame.image.load("/home/pi/PYGB/images/logo.png").convert_alpha()
@@ -113,6 +131,8 @@ class Pygb():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN:
                         done = True
+            if self.pad0.get_button(7):
+                done = True
 
     def change_menu(self, newmenu):
         global actual_menu
@@ -146,6 +166,7 @@ class Pygb():
         os.system("sudo poweroff")
 
     def events_check(self):
+        # KEYBOARD
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.openbox()
@@ -153,31 +174,62 @@ class Pygb():
                 self.needupdate = True
                 if event.key == pygame.K_ESCAPE:
                     self.buttonESCAPE = True
+                    print("Button ESCAPE pressed")
                 if event.key == pygame.K_RETURN:
                     self.buttonSTART = True
                     print("Button START pressed")
                 if event.key == pygame.K_DOWN:
-                    menuentries = len(self.actual_menu.sprites())
-                    if menuentries > 1:
-                        if self.actual_menu.actual_choice < menuentries - 1:
-                            self.actual_menu.actual_choice += 1
-                        else:
-                            self.actual_menu.actual_choice = 0
-                        self.actual_menu.update()
+                    self.buttonDOWN = True
+                    print("DOWN arrow pressed")
                 if event.key == pygame.K_UP:
-                    menuentries = len(self.actual_menu.sprites())
-                    if menuentries > 1:
-                        if self.actual_menu.actual_choice > 0:
-                            self.actual_menu.actual_choice -= 1
-                        else:
-                            self.actual_menu.actual_choice = menuentries - 1
-                        self.actual_menu.update()
-                if event.key == pygame.K_z:
-                    print("Button B pressed")
+                    self.buttonUP = True
+                    print("UP arrow pressed")
+                if event.key == pygame.K_RIGHT:
+                    self.buttonRIGHT = True
+                    print("RIGHT arrow pressed")
+                if event.key == pygame.K_LEFT:
+                    self.buttonLEFT = True
+                    print("LEFT arrow pressed")
+                if event.key == pygame.K_z:                    
                     self.buttonB = True
-                if event.key == pygame.K_x:
-                    print("Button A pressed")
+                    print("Button B pressed")
+                if event.key == pygame.K_x:                    
                     self.buttonA = True
+                    print("Button A pressed")
+        # GAMEPAD
+        button_scheme = 
+        if self.pad0.get_button(6):
+            self.needupdate = True
+            self.buttonESCAPE = True
+            print("Button ESCAPE pressed")
+        if self.pad0.get_button(7):
+            self.needupdate = True
+            self.buttonSTART = True
+            print("Button START pressed")
+        if self.pad0.get_button(14):
+            self.needupdate = True
+            self.buttonDOWN = True
+            print("DOWN arrow pressed")
+        if self.pad0.get_button(13):
+            self.needupdate = True
+            self.buttonUP = True
+            print("UP arrow pressed")
+        if self.pad0.get_button(12):
+            self.needupdate = True
+            self.buttonRIGHT = True
+            print("RIGHT arrow pressed")
+        if self.pad0.get_button(11):
+            self.needupdate = True
+            self.buttonLEFT = True
+            print("LEFT arrow pressed")
+        if self.pad0.get_button(1):
+            self.needupdate = True
+            self.buttonB = True
+            print("Button B pressed")
+        if self.pad0.get_button(0):
+            self.needupdate = True
+            self.buttonA = True
+            print("Button A pressed")
 
     def choice_effects(self):
         if self.buttonA:
@@ -192,6 +244,22 @@ class Pygb():
                 self.actual_menu.update()
         if self.buttonESCAPE:
             self.openbox()
+        if self.buttonDOWN:
+            menuentries = len(self.actual_menu.sprites())
+            if menuentries > 1:
+                if self.actual_menu.actual_choice < menuentries - 1:
+                    self.actual_menu.actual_choice += 1
+                else:
+                    self.actual_menu.actual_choice = 0
+                self.actual_menu.update()
+        if self.buttonUP:
+            menuentries = len(self.actual_menu.sprites())
+            if menuentries > 1:
+                if self.actual_menu.actual_choice > 0:
+                    self.actual_menu.actual_choice -= 1
+                else:
+                    self.actual_menu.actual_choice = menuentries - 1
+                self.actual_menu.update()
 
     def draw_images(self):
         #self.screen.fill(self.black)
@@ -222,6 +290,10 @@ class Pygb():
             self.buttonB = False
             self.buttonSTART = False
             self.buttonESCAPE = False
+            self.buttonDOWN = False
+            self.buttonRIGHT = False
+            self.buttonLEFT = False
+            self.buttonUP = False
             self.needupdate = False
 
 
