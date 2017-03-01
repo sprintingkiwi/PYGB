@@ -12,13 +12,13 @@ class Pygb():
         pygame.init()
         self.width = 800
         self.height = 480
-        #self.screen = pygame.display.set_mode([self.width, self.height])
-        self.screen = pygame.display.set_mode([self.width, self.height], pygame.FULLSCREEN)
-        
+        self.screen = pygame.display.set_mode([self.width, self.height])
+        #self.screen = pygame.display.set_mode([self.width, self.height], pygame.FULLSCREEN)
+
         pygame.key.set_repeat(500, 500)
-        
-        # GAMEPAD
-        self.gamepadControl = False        
+
+        # GAMEPAD INIT
+        self.gamepadControl = False
         try:
             # creo un oggetto Joystick
             self.pad0 = pygame.joystick.Joystick(0)
@@ -27,16 +27,6 @@ class Pygb():
             self.gamepadControl = True
         except:
             print('no GamePad found...')
-
-        self.buttons_scheme = {0: [self.buttonA, "Button A", "up"],
-                               1: [self.buttonB, "Button B", "up"],
-                               6: [self.buttonESCAPE, "Button ESCAPE", "up"],
-                               7: [self.buttonSTART, "Button START", "up"],
-                               14: [self.buttonDOWN, "Button DOWN", "up"],
-                               13: [self.buttonUP, "Button UP", "up"],
-                               12: [self.buttonRIGHT, "Button RIGHT", "up"],
-                               11: [self.buttonLEFT, "Button LEFT", "up"]}
-
         self.clock = pygame.time.Clock()
         # Define some colors
         self.white = [255, 255, 255]
@@ -62,6 +52,15 @@ class Pygb():
         self.buttonLEFT = False
         self.buttonUP = False
         self.needupdate = True
+        # Gamepad Buttons Scheme
+        self.buttons_scheme = {0: [self.buttonA, "Button A", "up"],
+                               1: [self.buttonB, "Button B", "up"],
+                               6: [self.buttonESCAPE, "Button ESCAPE", "up"],
+                               7: [self.buttonSTART, "Button START", "up"],
+                               14: [self.buttonDOWN, "Button DOWN", "up"],
+                               13: [self.buttonUP, "Button UP", "up"],
+                               12: [self.buttonRIGHT, "Button RIGHT", "up"],
+                               11: [self.buttonLEFT, "Button LEFT", "up"]}
         # LOGO
         self.logo = pygame.image.load("/home/pi/PYGB/images/logo.png").convert_alpha()
         self.logo = pygame.transform.scale(self.logo, [self.width, self.height])
@@ -199,45 +198,55 @@ class Pygb():
                 if event.key == pygame.K_LEFT:
                     self.buttonLEFT = True
                     print("LEFT arrow pressed")
-                if event.key == pygame.K_z:                    
+                if event.key == pygame.K_z:
                     self.buttonB = True
                     print("Button B pressed")
-                if event.key == pygame.K_x:                    
+                if event.key == pygame.K_x:
                     self.buttonA = True
                     print("Button A pressed")
         # GAMEPAD
-        if self.pad0.get_button(6):
-            self.needupdate = True
-            self.buttonESCAPE = True
-            print("Button ESCAPE pressed")
-        if self.pad0.get_button(7):
-            self.needupdate = True
-            self.buttonSTART = True
-            print("Button START pressed")
-        if self.pad0.get_button(14):
-            self.needupdate = True
-            self.buttonDOWN = True
-            print("DOWN arrow pressed")
-        if self.pad0.get_button(13):
-            self.needupdate = True
-            self.buttonUP = True
-            print("UP arrow pressed")
-        if self.pad0.get_button(12):
-            self.needupdate = True
-            self.buttonRIGHT = True
-            print("RIGHT arrow pressed")
-        if self.pad0.get_button(11):
-            self.needupdate = True
-            self.buttonLEFT = True
-            print("LEFT arrow pressed")
-        if self.pad0.get_button(1):
-            self.needupdate = True
-            self.buttonB = True
-            print("Button B pressed")
-        if self.pad0.get_button(0):
-            self.needupdate = True
-            self.buttonA = True
-            print("Button A pressed")
+        for button in self.buttons_scheme:
+            if not self.pad0.get_button(button):
+                self.buttons_scheme[button][2] = "up"
+        for button in self.buttons_scheme:
+            if self.pad0.get_button(button) and self.buttons_scheme[button][2] == "up":
+                self.needupdate = True
+                self.buttons_scheme[button][0] = True
+                print(self.buttons_scheme[button][1] + " pressed")
+                self.buttons_scheme[button][2] = "down"
+
+        #if self.pad0.get_button(6):
+            #self.needupdate = True
+            #self.buttonESCAPE = True
+            #print("Button ESCAPE pressed")
+        #if self.pad0.get_button(7):
+            #self.needupdate = True
+            #self.buttonSTART = True
+            #print("Button START pressed")
+        #if self.pad0.get_button(14):
+            #self.needupdate = True
+            #self.buttonDOWN = True
+            #print("DOWN arrow pressed")
+        #if self.pad0.get_button(13):
+            #self.needupdate = True
+            #self.buttonUP = True
+            #print("UP arrow pressed")
+        #if self.pad0.get_button(12):
+            #self.needupdate = True
+            #self.buttonRIGHT = True
+            #print("RIGHT arrow pressed")
+        #if self.pad0.get_button(11):
+            #self.needupdate = True
+            #self.buttonLEFT = True
+            #print("LEFT arrow pressed")
+        #if self.pad0.get_button(1):
+            #self.needupdate = True
+            #self.buttonB = True
+            #print("Button B pressed")
+        #if self.pad0.get_button(0):
+            #self.needupdate = True
+            #self.buttonA = True
+            #print("Button A pressed")
 
     def choice_effects(self):
         if self.buttonA:
