@@ -27,7 +27,16 @@ class Pygb():
             self.gamepadControl = True
         except:
             print('no GamePad found...')
-        
+
+        self.buttons_scheme = {0: [self.buttonA, "Button A", "up"],
+                               1: [self.buttonB, "Button B", "up"],
+                               6: [self.buttonESCAPE, "Button ESCAPE", "up"],
+                               7: [self.buttonSTART, "Button START", "up"],
+                               14: [self.buttonDOWN, "Button DOWN", "up"],
+                               13: [self.buttonUP, "Button UP", "up"],
+                               12: [self.buttonRIGHT, "Button RIGHT", "up"],
+                               11: [self.buttonLEFT, "Button LEFT", "up"]}
+
         self.clock = pygame.time.Clock()
         # Define some colors
         self.white = [255, 255, 255]
@@ -197,7 +206,6 @@ class Pygb():
                     self.buttonA = True
                     print("Button A pressed")
         # GAMEPAD
-        button_scheme = 
         if self.pad0.get_button(6):
             self.needupdate = True
             self.buttonESCAPE = True
