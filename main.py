@@ -53,14 +53,14 @@ class Pygb():
         self.buttonUP = False
         self.needupdate = True
         # Gamepad Buttons Scheme
-        self.buttons_scheme = {0: [self.buttonA, "Button A", "up"],
-                               1: [self.buttonB, "Button B", "up"],
-                               6: [self.buttonESCAPE, "Button ESCAPE", "up"],
-                               7: [self.buttonSTART, "Button START", "up"],
-                               14: [self.buttonDOWN, "Button DOWN", "up"],
-                               13: [self.buttonUP, "Button UP", "up"],
-                               12: [self.buttonRIGHT, "Button RIGHT", "up"],
-                               11: [self.buttonLEFT, "Button LEFT", "up"]}
+        self.buttons_scheme = {0: ["buttonA", "up"],
+                               1: ["buttonB", "up"],
+                               6: ["buttonESCAPE", "up"],
+                               7: ["buttonSTART", "up"],
+                               14: ["buttonDOWN", "up"],
+                               13: ["buttonUP", "up"],
+                               12: ["buttonRIGHT", "up"],
+                               11: ["buttonLEFT", "up"]}
         # LOGO
         self.logo = pygame.image.load("/home/pi/PYGB/images/logo.png").convert_alpha()
         self.logo = pygame.transform.scale(self.logo, [self.width, self.height])
@@ -207,14 +207,15 @@ class Pygb():
         # GAMEPAD
         for button in self.buttons_scheme:
             if not self.pad0.get_button(button):
-                self.buttons_scheme[button][2] = "up"
+                self.buttons_scheme[button][1] = "up"
         for button in self.buttons_scheme:
-            if self.pad0.get_button(button) and self.buttons_scheme[button][2] == "up":
+            if self.pad0.get_button(button) and self.buttons_scheme[button][1] == "up":
                 self.needupdate = True
-                self.buttons_scheme[button][0] = True
-                print(self.buttons_scheme[button][1] + " pressed")
-                self.buttons_scheme[button][2] = "down"
+                setattr(self, self.buttons_scheme[button][0], True)
+                print(self.buttons_scheme[button][0] + " pressed")
+                self.buttons_scheme[button][1] = "down"
 
+        print self.buttonA
         #if self.pad0.get_button(6):
             #self.needupdate = True
             #self.buttonESCAPE = True
