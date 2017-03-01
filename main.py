@@ -12,8 +12,8 @@ class Pygb():
         pygame.init()
         self.width = 800
         self.height = 480
-        self.screen = pygame.display.set_mode([self.width, self.height])
-        #self.screen = pygame.display.set_mode([self.width, self.height], pygame.FULLSCREEN)
+        #self.screen = pygame.display.set_mode([self.width, self.height])
+        self.screen = pygame.display.set_mode([self.width, self.height], pygame.FULLSCREEN)
 
         pygame.key.set_repeat(500, 500)
 
@@ -36,10 +36,6 @@ class Pygb():
         self.black = [0, 0, 0]
         # Available games list
         self.GAMES_list = os.listdir("/home/pi/PYGB_GAMES/")
-        self.GAMES_list.remove(".git")
-        self.GAMES_list.remove(".gitignore")
-        self.GAMES_list.remove("README.md")
-        self.GAMES_list.remove("LICENSE")
         print("Available Games:")
         for game in self.GAMES_list:
             print("*  " + game)
