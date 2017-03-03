@@ -6,7 +6,7 @@ class Menu(pygame.sprite.OrderedUpdates):
 
     def __init__(self,
                  pygb,
-                 fontname="Liberation Serif",
+                 fontname='Liberation Serif',
                  size=32,
                  bold=False,
                  italic=False,
@@ -31,7 +31,7 @@ class Menu(pygame.sprite.OrderedUpdates):
         self.parent = parent
         self.location = location
 
-    def create_choice(self, ID, text, thumb="", effect=None, param=None):
+    def create_choice(self, ID, text, thumb='', effect=None, param=None):
         self.add(Choice(self.pygb,
                         ID,
                         self.fontname,
@@ -55,6 +55,6 @@ class Menu(pygame.sprite.OrderedUpdates):
                 choice.size = self.size
                 choice.color = self.color
                 choice.update()
-        print(str(self.actual_choice) + " - " + self.sprites()[self.actual_choice].text)
+        print(str(self.actual_choice) + ' - ' + self.sprites()[self.actual_choice].text)
         self.actual_thumb = self.sprites()[self.actual_choice].thumb
         super(Menu, self).update()
