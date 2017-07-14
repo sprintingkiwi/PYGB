@@ -12,8 +12,10 @@ class Pygb():
         pygame.init()
         self.width = 800
         self.height = 480
-        #self.screen = pygame.display.set_mode([self.width, self.height])
-        self.screen = pygame.display.set_mode([self.width, self.height], pygame.FULLSCREEN)
+        self.screen = pygame.display.set_mode([self.width, self.height])
+        # self.screen = pygame.display.set_mode([self.width, self.height], pygame.FULLSCREEN)
+
+
 
         pygame.key.set_repeat(500, 500)
 
@@ -35,7 +37,13 @@ class Pygb():
         self.green = [0, 255, 0]
         self.black = [0, 0, 0]
         # Available games list
-        self.GAMES_list = os.listdir('/home/pi/PYGB_GAMES/')
+        if False:
+            pass
+            # Take the games from the USB
+            self.games_dir = ''
+        else:
+            self.games_dir = 'default_games/'
+        self.GAMES_list = os.listdir(self.games_dir)
         print('Available Games:')
         for game in self.GAMES_list:
             print('*  ' + game)
@@ -58,13 +66,13 @@ class Pygb():
                                12: ['buttonRIGHT', 'up'],
                                11: ['buttonLEFT', 'up']}
         # LOGO
-        self.logo = pygame.image.load('/home/pi/PYGB/images/logo.png').convert_alpha()
+        self.logo = pygame.image.load('images/logo.png').convert_alpha()
         self.logo = pygame.transform.scale(self.logo, [self.width, self.height])
         #CONSOLE
-        self.console = pygame.image.load('/home/pi/PYGB/images/console.png').convert_alpha()
+        self.console = pygame.image.load('images/console.png').convert_alpha()
         self.console = pygame.transform.scale(self.console, [self.width_adapt(800), self.height_adapt(750)])
         # BACKGROUND
-        self.background = pygame.image.load('/home/pi/PYGB/images/background.png').convert()
+        self.background = pygame.image.load('images/background.png').convert()
         self.background = pygame.transform.scale(self.background, [self.width, self.height])
         # ACTUAL MENU
         self.actual_menu = Menu(self)
@@ -95,21 +103,21 @@ class Pygb():
             self.gamesmenu.create_choice(self.GAMES_list.index(game),
                                          text=str(game),
                                          effect=self.playgame,
-                                         thumb='/home/pi/PYGB_GAMES/' + str(game) + '/thumb.png')
+                                         thumb=self.games_dir + str(game) + '/thumb.png')
         # Add Options Menu chioces
         self.optionsmenu.create_choice(0, text='Update Games', effect=self.update_games)
         self.optionsmenu.create_choice(1, text='Add Games')
         self.optionsmenu.create_choice(2, text='go to openbox', effect=self.openbox)
         self.optionsmenu.create_choice(3, text='CREDITS', effect=self.change_menu, param=self.credits_scroll)
         # Add Main Menu choices
-        self.mainmenu.create_choice(0, text='PLAY', thumb='/home/pi/PYGB/images/play.png', effect=self.change_menu, param=self.gamesmenu)
-        self.mainmenu.create_choice(1, text='Options', thumb='/home/pi/PYGB/images/options.png', effect=self.change_menu, param=self.optionsmenu)
-        self.mainmenu.create_choice(2, text='QUIT', thumb='/home/pi/PYGB/images/quit.png', effect=self.quit_pygb)
+        self.mainmenu.create_choice(0, text='PLAY', thumb='images/play.png', effect=self.change_menu, param=self.gamesmenu)
+        self.mainmenu.create_choice(1, text='Options', thumb='images/options.png', effect=self.change_menu, param=self.optionsmenu)
+        self.mainmenu.create_choice(2, text='QUIT', thumb='images/quit.png', effect=self.quit_pygb)
         # Add Credits Menu choices
         for game in self.GAMES_list:
             self.credits_scroll.create_choice(self.GAMES_list.index(game),
                                               text=str(game),
-                                              thumb='/home/pi/PYGB_GAMES/' + str(game) + '/credits/thumb.png',
+                                              thumb=self.games_dir + str(game) + '/credits/thumb.png',
                                               effect=self.show_credits,
                                               param=game)
         # Actual Menu
@@ -135,7 +143,7 @@ class Pygb():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN:
                         done = True
-            if self.pad0.get_button(7):
+            if self.gamepadControl and self.pad0.get_button(7):
                 done = True
 
     def change_menu(self, newmenu):
@@ -143,15 +151,15 @@ class Pygb():
         self.actual_menu = newmenu
 
     def playgame(self, *args):
-        newdir = '/home/pi/PYGB_GAMES/' + str(self.GAMES_list[self.actual_menu.actual_choice])
+        newdir = self.games_dir + str(self.GAMES_list[self.actual_menu.actual_choice])
         print(newdir)
         subprocess.Popen(['python', 'main.py'], cwd=newdir)
-        pygame.quit()
-        quit()
+        # pygame.quit()
+        # quit()
 
     def update_games(self, *args):
-        subprocess.call(['git', 'checkout', '.'], cwd='/home/pi/PYGB_GAMES/')
-        subprocess.Popen(['git', 'pull'], cwd='/home/pi/PYGB_GAMES/')
+        subprocess.call(['git', 'checkout', '.'], cwd=self.games_dir)
+        subprocess.Popen(['git', 'pull'], cwd=self.games_dir)
 
     def openbox(self, *args):
         pygame.quit()
@@ -160,7 +168,7 @@ class Pygb():
     def show_credits(self, game, *args):
         self.cred_details.empty()
         self.cred_details.actual_choice = 0
-        creds = open('/home/pi/PYGB_GAMES/' + game + '/credits/credits.txt')
+        creds = open(self.games_dir + game + '/credits/credits.txt')
         lines = creds.readlines()
         for line in lines:
             self.cred_details.create_choice(lines.index(line), text=line)
@@ -201,49 +209,17 @@ class Pygb():
                     self.buttonA = True
                     print('Button A pressed')
         # GAMEPAD
-        for button in self.buttons_scheme:
-            if not self.pad0.get_button(button):
-                self.buttons_scheme[button][1] = 'up'
-        for button in self.buttons_scheme:
-            if self.pad0.get_button(button) and self.buttons_scheme[button][1] == 'up':
-                self.needupdate = True
-                setattr(self, self.buttons_scheme[button][0], True)
-                print(self.buttons_scheme[button][0] + ' pressed')
-                self.buttons_scheme[button][1] = 'down'
+        if self.gamepadControl:
+            for button in self.buttons_scheme:
+                if not self.pad0.get_button(button):
+                    self.buttons_scheme[button][1] = 'up'
+            for button in self.buttons_scheme:
+                if self.pad0.get_button(button) and self.buttons_scheme[button][1] == 'up':
+                    self.needupdate = True
+                    setattr(self, self.buttons_scheme[button][0], True)
+                    print(self.buttons_scheme[button][0] + ' pressed')
+                    self.buttons_scheme[button][1] = 'down'
 
-        print self.buttonA
-        #if self.pad0.get_button(6):
-            #self.needupdate = True
-            #self.buttonESCAPE = True
-            #print('Button ESCAPE pressed')
-        #if self.pad0.get_button(7):
-            #self.needupdate = True
-            #self.buttonSTART = True
-            #print('Button START pressed')
-        #if self.pad0.get_button(14):
-            #self.needupdate = True
-            #self.buttonDOWN = True
-            #print('DOWN arrow pressed')
-        #if self.pad0.get_button(13):
-            #self.needupdate = True
-            #self.buttonUP = True
-            #print('UP arrow pressed')
-        #if self.pad0.get_button(12):
-            #self.needupdate = True
-            #self.buttonRIGHT = True
-            #print('RIGHT arrow pressed')
-        #if self.pad0.get_button(11):
-            #self.needupdate = True
-            #self.buttonLEFT = True
-            #print('LEFT arrow pressed')
-        #if self.pad0.get_button(1):
-            #self.needupdate = True
-            #self.buttonB = True
-            #print('Button B pressed')
-        #if self.pad0.get_button(0):
-            #self.needupdate = True
-            #self.buttonA = True
-            #print('Button A pressed')
 
     def choice_effects(self):
         if self.buttonA:

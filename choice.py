@@ -37,7 +37,7 @@ class Choice(pygame.sprite.Sprite):
             self.thumb = pygame.transform.scale(self.thumb, [int(pygb.width*0.35), int(pygb.height*0.35)])
         except:
             #self.thumb = None
-            self.thumb = pygame.image.load('/home/pi/PYGB/images/logo.png').convert_alpha()
+            self.thumb = pygame.image.load('images/logo.png').convert_alpha()
             self.thumb = pygame.transform.scale(self.thumb, [int(pygb.width*0.35), int(pygb.height*0.35)])
         self.effect = effect
         self.param = param
