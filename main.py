@@ -3,6 +3,8 @@ import os
 import time
 import subprocess
 from menu import Menu
+import sys
+import py_compile
 
 
 class Pygb:
@@ -105,7 +107,7 @@ class Pygb:
         # Add Options Menu chioces
         self.optionsmenu.create_choice(0, text='Update Games', effect=self.update_games)
         self.optionsmenu.create_choice(1, text='Add Games')
-        self.optionsmenu.create_choice(2, text='go to openbox', effect=self.openbox)
+        self.optionsmenu.create_choice(2, text='go to openbox', effect=self.terminate_pygb)
         self.optionsmenu.create_choice(3, text='CREDITS', effect=self.change_menu, param=self.credits_scroll)
         # Add Main Menu choices
         self.mainmenu.create_choice(0, text='PLAY', thumb='images/play.png', effect=self.change_menu, param=self.gamesmenu)
@@ -153,21 +155,30 @@ class Pygb:
         newdir = self.games_dir + str(self.GAMES_list[self.actual_menu.actual_choice])
         print(newdir)
         items = os.listdir(newdir)
+        command = None
         if 'main.py' in items:
-            subprocess.Popen(['python', 'main.py'], cwd=newdir)
+            command = ['python', 'main.py']
         else:
             for item in items:
                 ext = item.split('.')[-1]
                 if ext == 'sb':
-                    subprocess.Popen(['scratch', item], cwd=newdir)
-        # pygame.quit()
-        # quit()
+                    command = ['scratch', item]
+        if command is not None:
+            proc = subprocess.Popen(command, cwd=newdir)
+
+            # Process life checker
+            pid = proc.pid
+            py_compile.compile('pid_checker.py')
+            subprocess.Popen(['python', 'pid_checker.pyc', str(pid)])
+            time.sleep(1)
+            self.terminate_pygb()
 
     def update_games(self, *args):
         subprocess.call(['git', 'checkout', '.'], cwd=self.games_dir)
         subprocess.Popen(['git', 'pull'], cwd=self.games_dir)
 
-    def openbox(self, *args):
+    def terminate_pygb(self, *args):
+        # sys.exit()
         pygame.quit()
         quit()
 
@@ -187,7 +198,7 @@ class Pygb:
         # KEYBOARD
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                self.openbox()
+                self.terminate_pygb()
             if event.type == pygame.KEYDOWN:
                 self.needupdate = True
                 if event.key == pygame.K_ESCAPE:
@@ -238,7 +249,7 @@ class Pygb:
                 self.actual_menu = self.actual_menu.parent
                 self.actual_menu.update()
         if self.buttonESCAPE:
-            self.openbox()
+            self.terminate_pygb()
         if self.buttonDOWN:
             menuentries = len(self.actual_menu.sprites())
             if menuentries > 1:
