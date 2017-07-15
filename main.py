@@ -157,24 +157,36 @@ class Pygb:
         items = os.listdir(newdir)
         command = None
         if 'main.py' in items:
+
             command = ['python', 'main.py']
             proc = subprocess.Popen(command, cwd=newdir)
+
+            # Process life checker
+            pid = proc.pid
+            py_compile.compile('pid_checker.py')
+            subprocess.Popen(['python', 'pid_checker.pyc', str(pid)])
+            # time.sleep(1)
+            self.terminate_pygb()
+
         else:
             for item in items:
                 ext = item.split('.')[-1]
                 if ext == 'sb':
-                    command = ['scratch', 'presentation', item]
-                    proc = subprocess.Popen(command)
+
+                    wd = os.path.abspath(newdir)
+                    # print wd
+
+                    # command = ['scratch', 'presentation', item]
+                    # proc = subprocess.Popen(command, cwd=wd)
+                    # proc.wait()
+
+                    command = 'scratch presentation ' + wd + '/' + item
+                    print command
+                    os.system(command)
+
         # if command is not None:
         #     print(command)
         #     proc = subprocess.Popen(command, cwd=newdir)
-
-        # Process life checker
-        pid = proc.pid
-        py_compile.compile('pid_checker.py')
-        subprocess.Popen(['python', 'pid_checker.pyc', str(pid)])
-        time.sleep(1)
-        self.terminate_pygb()
 
     def update_games(self, *args):
         subprocess.call(['git', 'checkout', '.'], cwd=self.games_dir)

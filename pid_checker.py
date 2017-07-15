@@ -4,6 +4,7 @@ import os
 import sys
 import time
 
+
 # wd = os.getcwd()
 # print wd
 # subprocess.Popen(['python', 'main.py'], cwd=wd)
@@ -19,6 +20,7 @@ print(pid)
 
 checking = True
 while checking:
+
     print('checking')
     if not psutil.pid_exists(pid):
         checking = False
