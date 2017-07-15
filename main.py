@@ -5,26 +5,24 @@ import subprocess
 from menu import Menu
 
 
-class Pygb():
+class Pygb:
 
     def __init__(self):
-        #super(Pygb, self).__init__()
+        # super(Pygb, self).__init__()
         pygame.init()
         self.width = 800
         self.height = 480
         self.screen = pygame.display.set_mode([self.width, self.height])
         # self.screen = pygame.display.set_mode([self.width, self.height], pygame.FULLSCREEN)
 
-
-
         pygame.key.set_repeat(500, 500)
 
         # GAMEPAD INIT
         self.gamepadControl = False
         try:
-            # creo un oggetto Joystick
+            # Create Joystick object
             self.pad0 = pygame.joystick.Joystick(0)
-            # inizializzo il joystick
+            # Init the joystick
             self.pad0.init()
             self.gamepadControl = True
         except:
@@ -84,20 +82,20 @@ class Pygb():
         self.optionsmenu = Menu(self, fontname='PermanentMarker', size=48, color=self.blue, parent=self.mainmenu)
         # CREATE CREDITS MENUS
         self.credits_scroll = Menu(self,
-                              fontname='PermanentMarker',
-                              size=32,
-                              color=self.green,
-                              selection_color=self.green,
-                              selection_zoom=1,
-                              parent=self.optionsmenu)
+                                   fontname='PermanentMarker',
+                                   size=32,
+                                   color=self.green,
+                                   selection_color=self.green,
+                                   selection_zoom=1,
+                                   parent=self.optionsmenu)
         self.cred_details = Menu(self,
-                              fontname='PermanentMarker',
-                              size=32,
-                              location=[300, 200],
-                              color=self.green,
-                              selection_color=self.green,
-                              selection_zoom=1,
-                              parent=self.credits_scroll)
+                                 fontname='PermanentMarker',
+                                 size=32,
+                                 location=[300, 200],
+                                 color=self.green,
+                                 selection_color=self.green,
+                                 selection_zoom=1,
+                                 parent=self.credits_scroll)
         # Add Games Menu choices
         for game in self.GAMES_list:
             self.gamesmenu.create_choice(self.GAMES_list.index(game),
@@ -143,8 +141,9 @@ class Pygb():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN:
                         done = True
-            if self.gamepadControl and self.pad0.get_button(7):
-                done = True
+            if self.gamepadControl:
+                if self.pad0.get_button(7):
+                    done = True
 
     def change_menu(self, newmenu):
         global actual_menu
@@ -153,7 +152,14 @@ class Pygb():
     def playgame(self, *args):
         newdir = self.games_dir + str(self.GAMES_list[self.actual_menu.actual_choice])
         print(newdir)
-        subprocess.Popen(['python', 'main.py'], cwd=newdir)
+        items = os.listdir(newdir)
+        if 'main.py' in items:
+            subprocess.Popen(['python', 'main.py'], cwd=newdir)
+        else:
+            for item in items:
+                ext = item.split('.')[-1]
+                if ext == 'sb':
+                    subprocess.Popen(['scratch', item], cwd=newdir)
         # pygame.quit()
         # quit()
 
@@ -219,7 +225,6 @@ class Pygb():
                     setattr(self, self.buttons_scheme[button][0], True)
                     print(self.buttons_scheme[button][0] + ' pressed')
                     self.buttons_scheme[button][1] = 'down'
-
 
     def choice_effects(self):
         if self.buttonA:
@@ -288,4 +293,5 @@ class Pygb():
 
 
 pygb = Pygb()
+# print(pygb.pad0)
 pygb.mainloop()

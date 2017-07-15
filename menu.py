@@ -1,6 +1,7 @@
 import pygame
 from choice import Choice
 
+
 # class for menus
 class Menu(pygame.sprite.OrderedUpdates):
 

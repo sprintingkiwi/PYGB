@@ -1,6 +1,6 @@
 from pydojo import *
 # CREATE GAME DISPLAY
-screen(1600, 900, fullscreen=True)
+screen(1280, 720)
 
 turtle = Actor()
 turtle.hide()
