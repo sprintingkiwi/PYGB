@@ -16,6 +16,7 @@ class Pygb:
         self.height = 480
         self.screen = pygame.display.set_mode([self.width, self.height])
         # self.screen = pygame.display.set_mode([self.width, self.height], pygame.FULLSCREEN)
+        pygame.display.toggle_fullscreen()
 
         pygame.key.set_repeat(500, 500)
 
@@ -182,7 +183,9 @@ class Pygb:
 
                     command = 'scratch presentation ' + wd + '/' + item
                     print command
+                    pygame.display.toggle_fullscreen()
                     os.system(command)
+                    pygame.display.toggle_fullscreen()
 
         # if command is not None:
         #     print(command)
