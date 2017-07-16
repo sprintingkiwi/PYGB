@@ -78,7 +78,7 @@ class Pygb:
         # ACTUAL MENU
         self.actual_menu = Menu(self)
         # CREATE MAIN MENU
-        self.mainmenu = Menu(self, fontname='PermanentMarker', size=64, color=self.white, location=[950, 250])
+        self.mainmenu = Menu(self, fontname='PermanentMarker', size=64, color=self.white, location=[880, 250])
         # CREATE GAMES MENU
         self.gamesmenu = Menu(self, fontname='PermanentMarker', size=48, color=self.white, parent=self.mainmenu)
         # CREATE OPTIONS MENU
@@ -106,14 +106,14 @@ class Pygb:
                                          effect=self.playgame,
                                          thumb=self.games_dir + str(game) + '/thumb.png')
         # Add Options Menu chioces
-        self.optionsmenu.create_choice(0, text='Update Games', effect=self.update_games)
-        self.optionsmenu.create_choice(1, text='Add Games')
-        self.optionsmenu.create_choice(2, text='go to openbox', effect=self.terminate_pygb)
-        self.optionsmenu.create_choice(3, text='CREDITS', effect=self.change_menu, param=self.credits_scroll)
+        # self.optionsmenu.create_choice(0, text='Update Games', effect=self.update_games)
+        self.optionsmenu.create_choice(0, text='Scan for games')
+        self.optionsmenu.create_choice(1, text='Quit PYGB', effect=self.terminate_pygb)
+        self.optionsmenu.create_choice(2, text='Credits', effect=self.change_menu, param=self.credits_scroll)
         # Add Main Menu choices
         self.mainmenu.create_choice(0, text='PLAY', thumb='images/play.png', effect=self.change_menu, param=self.gamesmenu)
         self.mainmenu.create_choice(1, text='Options', thumb='images/options.png', effect=self.change_menu, param=self.optionsmenu)
-        self.mainmenu.create_choice(2, text='QUIT', thumb='images/quit.png', effect=self.quit_pygb)
+        self.mainmenu.create_choice(2, text='POWEROFF', thumb='images/quit.png', effect=self.quit_pygb)
         # Add Credits Menu choices
         for game in self.GAMES_list:
             self.credits_scroll.create_choice(self.GAMES_list.index(game),
@@ -189,9 +189,9 @@ class Pygb:
                     # command = ['scratch', 'presentation', item]
                     # proc = subprocess.Popen(command, cwd=wd)
 
-    def update_games(self, *args):
-        subprocess.call(['git', 'checkout', '.'], cwd=self.games_dir)
-        subprocess.Popen(['git', 'pull'], cwd=self.games_dir)
+    # def update_games(self, *args):
+        # subprocess.call(['git', 'checkout', '.'], cwd=self.games_dir)
+        # subprocess.Popen(['git', 'pull'], cwd=self.games_dir)
 
     def terminate_pygb(self, *args):
         # sys.exit()
@@ -265,7 +265,8 @@ class Pygb:
                 self.actual_menu = self.actual_menu.parent
                 self.actual_menu.update()
         if self.buttonESCAPE:
-            self.terminate_pygb()
+            # self.terminate_pygb()
+            pass
         if self.buttonDOWN:
             menuentries = len(self.actual_menu.sprites())
             if menuentries > 1:
