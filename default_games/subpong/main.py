@@ -20,7 +20,7 @@ def events():
     if key(X) or buttondown(1, 0):
         playerL.point(180)
         playerL.forward(5)
-    if key(ESCAPE):
+    if key(ESCAPE) or buttondown(6, 0):
         terminate()
     if keydown(A):
         music.volumeup(10)

@@ -12,6 +12,9 @@ time = 0
 # MAIN LOOP
 while True:
 
+    if keydown(ESCAPE) or buttondown(6, 0):
+        terminate()
+
     clear()
 
     if ticks() - time > 100:
