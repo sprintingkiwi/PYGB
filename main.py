@@ -160,14 +160,18 @@ class Pygb:
         if 'main.py' in items:
 
             command = ['python', 'main.py']
+            print(command)
+            pygame.display.toggle_fullscreen()
             proc = subprocess.Popen(command, cwd=newdir)
+            proc.wait()
+            pygame.display.toggle_fullscreen()
 
             # Process life checker
-            pid = proc.pid
-            py_compile.compile('pid_checker.py')
-            subprocess.Popen(['python', 'pid_checker.pyc', str(pid)])
+            # pid = proc.pid
+            # py_compile.compile('pid_checker.py')
+            # subprocess.Popen(['python', 'pid_checker.pyc', str(pid)])
             # time.sleep(1)
-            self.terminate_pygb()
+            # self.terminate_pygb()
 
         else:
             for item in items:
@@ -175,21 +179,15 @@ class Pygb:
                 if ext == 'sb':
 
                     wd = os.path.abspath(newdir)
-                    # print wd
-
-                    # command = ['scratch', 'presentation', item]
-                    # proc = subprocess.Popen(command, cwd=wd)
-                    # proc.wait()
 
                     command = 'scratch presentation ' + wd + '/' + item
-                    print command
+                    print(command)
                     pygame.display.toggle_fullscreen()
                     os.system(command)
                     pygame.display.toggle_fullscreen()
 
-        # if command is not None:
-        #     print(command)
-        #     proc = subprocess.Popen(command, cwd=newdir)
+                    # command = ['scratch', 'presentation', item]
+                    # proc = subprocess.Popen(command, cwd=wd)
 
     def update_games(self, *args):
         subprocess.call(['git', 'checkout', '.'], cwd=self.games_dir)

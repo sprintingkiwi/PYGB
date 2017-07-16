@@ -4,7 +4,7 @@ from pydojo import *
 # create game display
 width = 800
 height = 480
-screen(width, height)
+screen(width, height, fullscreen=True)
 
 
 def events():
