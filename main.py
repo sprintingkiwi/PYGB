@@ -16,7 +16,7 @@ class Pygb:
         self.height = 480
         self.screen = pygame.display.set_mode([self.width, self.height])
         # self.screen = pygame.display.set_mode([self.width, self.height], pygame.FULLSCREEN)
-        # pygame.display.toggle_fullscreen()
+        pygame.display.toggle_fullscreen()
 
         pygame.key.set_repeat(500, 500)
 
@@ -161,10 +161,10 @@ class Pygb:
 
             command = ['python', 'main.py']
             print(command)
-            # pygame.display.toggle_fullscreen()
+            pygame.display.toggle_fullscreen()
             proc = subprocess.Popen(command, cwd=newdir)
             proc.wait()
-            # pygame.display.toggle_fullscreen()
+            pygame.display.toggle_fullscreen()
 
             # Process life checker
             # pid = proc.pid
@@ -182,9 +182,9 @@ class Pygb:
 
                     command = 'scratch presentation ' + wd + '/' + item
                     print(command)
-                    # pygame.display.toggle_fullscreen()
+                    pygame.display.toggle_fullscreen()
                     os.system(command)
-                    # pygame.display.toggle_fullscreen()
+                    pygame.display.toggle_fullscreen()
 
                     # command = ['scratch', 'presentation', item]
                     # proc = subprocess.Popen(command, cwd=wd)
