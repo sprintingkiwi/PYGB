@@ -1,8 +1,5 @@
-# PYGB
-## Repository for the "Pygame-Buddy" gaming console!
-
-
-The Pygame-Buddy aims at being an educational gaming console. Based on python and pygame, it allows the player (or coder) to enjoy the games created by others, modify them or program brand new games!
+# Pygame-Buddy
+The Pygame-Buddy interface aims to turn a Raspberry-Pi into an educational gaming console. Based on Python and Pygame, it allows the player (or coder) to enjoy the games created by others, modify them or program new games!
 
 
 - Flash it on your Raspberry-Pi
