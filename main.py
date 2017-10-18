@@ -157,8 +157,8 @@ class Pygb:
         print(newdir)
         items = os.listdir(newdir)
         command = None
+        
         if 'main.py' in items:
-
             command = ['python', 'main.py']
             print(command)
             pygame.display.toggle_fullscreen()
@@ -172,20 +172,25 @@ class Pygb:
             # subprocess.Popen(['python', 'pid_checker.pyc', str(pid)])
             # time.sleep(1)
             # self.terminate_pygb()
+            
+        elif 'launcher.sh' in items:
+            command = './launcher.sh'
+            print(command)
+            pygame.display.toggle_fullscreen()
+            os.system(command)
+            pygame.display.toggle_fullscreen()
 
         else:
             for item in items:
                 ext = item.split('.')[-1]
+                
                 if ext == 'sb':
-
                     wd = os.path.abspath(newdir)
-
                     command = 'scratch presentation ' + wd + '/' + item
                     print(command)
                     pygame.display.toggle_fullscreen()
                     os.system(command)
                     pygame.display.toggle_fullscreen()
-
                     # command = ['scratch', 'presentation', item]
                     # proc = subprocess.Popen(command, cwd=wd)
 
