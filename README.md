@@ -11,5 +11,6 @@ The Pygame-Buddy interface aims to turn a Raspberry-Pi into an educational gamin
 
 The whole user interface is made with pygame.
 
+![](images/logo.png)
 
 Credits for the graphics: Valentina Pantaleoni.
